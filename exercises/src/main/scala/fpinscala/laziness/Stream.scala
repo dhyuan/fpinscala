@@ -3,6 +3,26 @@ package fpinscala.laziness
 import Stream._
 trait Stream[+A] {
 
+  def toList: List[A] = {
+    def loop(left: Stream[A], acc: List[A]) = {
+      left match {
+        case Cons(h, t) => loop(t(), acc :: h())
+        case _ => acc
+      }
+    }
+    loop(this, List())
+  }
+
+  def take(n: Int): Steam[A] = {
+    def loop(left: Stream[A], count: Int, acc: Stream[A]) = {
+      if (n <= 0) {
+        acc
+      }else {
+        loop(left.h)
+      }
+    }
+  }
+
   def foldRight[B](z: => B)(f: (A, => B) => B): B = // The arrow `=>` in front of the argument type `B` means that the function `f` takes its second argument by name and may choose not to evaluate it.
     this match {
       case Cons(h,t) => f(h(), t().foldRight(z)(f)) // If `f` doesn't evaluate its second argument, the recursion never occurs.
